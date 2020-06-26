@@ -17,7 +17,7 @@ public class Feed implements Serializable {
     @Element(name = "title")
     private String title;
 
-    @ElementList(inline = true, name = "entry")
+    @ElementList(required= false, inline = true, name = "entry")
     private List<Entry> entrys;
 
     public String getTitle() {

@@ -37,4 +37,11 @@ dependencies {
 
     //Retrofit XMLConverter
     implementation 'com.squareup.retrofit2:converter-simplexml:2.2.0'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //RecyclerView
+    //noinspection GradleCompatible
+    implementation 'com.android.support:recyclerview-v7:25.3.1'
 }

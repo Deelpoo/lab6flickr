@@ -1,12 +1,18 @@
 package com.example.lab6flickr;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lab6flickr.model.Feed;
+import com.example.lab6flickr.model.entry.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,24 +26,47 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://www.flickr.com/services/feeds/";
 
+    ListView listView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         getSupportActionBar().hide();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(SimpleXmlConverterFactory.create()).build();
-        FeedAPI feedAPI = retrofit.create(FeedAPI.class);
+        listView = (ListView)findViewById(R.id.listview);
+        final Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(SimpleXmlConverterFactory.create()).build();
+        final FeedAPI feedAPI = retrofit.create(FeedAPI.class);
         Call<Feed> call = feedAPI.getFeed();
+
+        TextView feed = (TextView)findViewById(R.id.feed);
+        feed.setTextColor(Color.parseColor("#0059d6"));
+
+        createImageLinkList(call);
+    }
+
+    private void createImageLinkList(Call<Feed> call){
 
         call.enqueue(new Callback<Feed>() {
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
+                List<Entry> entrys = response.body().getEntrys();
+
+                List<String> titles = new ArrayList<>();
+                List<String> publisheds = new ArrayList<>();
+                List<String> imagesUrl = new ArrayList<>();
+
+                for(Entry e : entrys){
+                    titles.add(e.getTitle());
+                    publisheds.add(e.getPublished());
+                    imagesUrl.add(e.getLinks().get(1).getHref());
+                }
+
+                MyAdapter myAdapter = new MyAdapter(MainActivity.this, titles, publisheds, imagesUrl);
+                listView.setAdapter(myAdapter);
+
                 Log.d(TAG,"onResponse: feed: " + response.body().getEntrys());
                 Log.d(TAG,"onResponse: Server Response: " + response.toString());
-
-                Toast.makeText(MainActivity.this, "DALE CARLA", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -48,3 +77,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+

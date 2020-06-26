@@ -1,10 +1,11 @@
 package com.example.lab6flickr.model.entry;
 
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Root(name = "entry", strict = false)
 public class Entry implements Serializable {
@@ -15,22 +16,15 @@ public class Entry implements Serializable {
     @Element(name = "published")
     private String published;
 
-    @Element(required = false, name = "link")
-    private Link link;
+    @ElementList(required= false, inline = true, name = "link")
+    private List<Link> links;
 
-    public class Link {
-        @Attribute (name = "rel")
-        private String rel;
-        @Attribute (name = "type")
-        private String type;
-        @Attribute (name = "href")
-        private String href;
-    }
+    public Entry() {   }
 
-    public Entry(String title, String published, Link link) {
+    public Entry(String title, String published, List<Link> links) {
         this.title = title;
         this.published = published;
-        this.link = link;
+        this.links = links;
     }
 
     public String getTitle() {
@@ -49,12 +43,12 @@ public class Entry implements Serializable {
         this.published = published;
     }
 
-    public Link getLink() {
-        return link;
+    public List<Link> getLinks() {
+        return links;
     }
 
-    public void setLink(Link link) {
-        this.link = link;
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     @Override
@@ -62,7 +56,7 @@ public class Entry implements Serializable {
         return "Entry{" +
                 "title='" + title + '\'' +
                 ", published='" + published + '\'' +
-                ", link='" + link + '\'' +
+                ", link='" + links + '\'' +
                 '}'+"\n\n";
     }
 }
